@@ -14,3 +14,12 @@ test("page is a relative-path 240x282 Rabbit creation", () => {
   assert.match(css, /width:\s*240px/);
   assert.match(css, /height:\s*282px/);
 });
+
+test("browser module includes Rabbit SDK, PTT, settings, and simulation hooks", () => {
+  const app = readFileSync(new URL("../js/app.js", import.meta.url), "utf8");
+  assert.match(app, /creationSensors/);
+  assert.match(app, /sideClick/);
+  assert.match(app, /AudioContext/);
+  assert.match(app, /settingsForm/);
+  assert.match(app, /r1PomodoroDebug/);
+});
