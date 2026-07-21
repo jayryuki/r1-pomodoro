@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=240, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#11100e">
+  <title>Turnodoro</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main id="app" aria-live="polite">
+    <section class="timer-screen" aria-labelledby="stageName">
+      <header>
+        <h1 id="stageName">Focus 1</h1>
+        <button id="settingsButton" class="icon-button" type="button" aria-label="Open settings">⚙</button>
+      </header>
+      <output id="time" class="time">25:00</output>
+      <div id="positions" class="positions" aria-label="Timer position">
+        <span class="position active"></span><span class="position"></span>
+        <span class="position"></span><span class="position"></span>
+      </div>
+      <p id="status" class="status">Stand R1 on an edge</p>
+      <button id="soundButton" class="sound-button" type="button" hidden>Enable sound</button>
+    </section>
+
+    <section id="settings" class="settings" aria-labelledby="settingsTitle" hidden>
+      <header><h2 id="settingsTitle">Timer settings</h2></header>
+      <form id="settingsForm" novalidate>
+        <label>Focus 1 <input id="duration0" type="number" min="1" step="1" inputmode="numeric"></label>
+        <label>Short break <input id="duration1" type="number" min="1" step="1" inputmode="numeric"></label>
+        <label>Focus 2 <input id="duration2" type="number" min="1" step="1" inputmode="numeric"></label>
+        <label>Long break <input id="duration3" type="number" min="1" step="1" inputmode="numeric"></label>
+        <p id="settingsError" class="error" role="alert"></p>
+        <div class="settings-actions">
+          <button type="submit">Save</button>
+          <button id="cancelButton" type="button">Cancel</button>
+          <button id="restoreButton" type="button">Defaults</button>
+          <button id="calibrateButton" type="button">Calibrate</button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>
