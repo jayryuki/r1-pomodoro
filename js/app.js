@@ -193,6 +193,7 @@ function formatTime(milliseconds) {
 }
 
 function boot() {
+  console.log("[Turnodoro] boot() called");
   const appElement = document.querySelector("#app");
   const settings = document.querySelector("#settings");
   const settingsForm = document.querySelector("#settingsForm");
@@ -205,6 +206,7 @@ function boot() {
   let sensorCount = 0;
 
   function debug(text) {
+    console.log("[Turnodoro]", text);
     if (debugEl) debugEl.textContent = text;
   }
 
@@ -324,4 +326,21 @@ function boot() {
   }
 }
 
-if (typeof document !== "undefined") boot();
+if (typeof document !== "undefined") {
+  window.addEventListener("error", e => {
+    console.error("[Turnodoro] error:", e.message, e.filename, e.lineno);
+    const el = document.querySelector("#debug");
+    if (el) el.textContent = "ERR: " + e.message;
+  });
+  window.addEventListener("unhandledrejection", e => {
+    console.error("[Turnodoro] unhandled rejection:", e.reason);
+  });
+  try {
+    console.log("[Turnodoro] boot starting");
+    boot();
+  } catch (e) {
+    console.error("[Turnodoro] boot failed:", e);
+    const el = document.querySelector("#debug");
+    if (el) el.textContent = "BOOT ERR: " + (e?.message || e);
+  }
+}
