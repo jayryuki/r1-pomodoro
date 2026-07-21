@@ -107,7 +107,7 @@
     options = options || {};
     var calibration = options.calibration || null;
     var stableMs = options.stableMs || 500;
-    var flatThreshold = options.flatThreshold || 0.55;
+    var flatThreshold = options.flatThreshold || 0.15;
     var tolerance = options.tolerance || Math.PI / 6;
     var smoothing = options.smoothing != null ? options.smoothing : 0.35;
 
@@ -309,10 +309,12 @@
     var debugEl = document.querySelector("#debug");
     var alarm = new Alarm(soundButton);
     var sensorCount = 0;
+    var showDebug = new URLSearchParams(location.search).has("debug");
+    if (debugEl && !showDebug) debugEl.style.display = "none";
 
     function debug(text) {
       console.log("[Turnodoro]", text);
-      if (debugEl) debugEl.textContent = text;
+      if (showDebug && debugEl) debugEl.textContent = text;
     }
 
     var render = function (state) {
