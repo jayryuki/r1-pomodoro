@@ -28,7 +28,7 @@ On first use, or after calibration data is cleared:
 3. The first stable adjacent 90-degree turn establishes the direction in which positions advance.
 4. The remaining positions follow around the device at 90-degree intervals.
 
-The learned mapping persists across launches. On later launches, the first recognized mapped edge starts its assigned timer. `Calibrate orientation` clears only orientation data and repeats the learning flow; it does not reset configured durations.
+The learned mapping persists across launches. On later launches, the first recognized mapped edge starts its assigned timer. `Calibrate orientation` clears only orientation data and repeats the learning flow; it does not reset configured durations. If a countdown is active, calibration pauses it and suppresses orientation-based timer switching. After the base edge and first adjacent edge are learned, the previous countdown resumes from its remaining time. The next stable edge change returns control to the new orientation mapping.
 
 ## Interface
 
