@@ -316,6 +316,16 @@
       document.querySelectorAll(".position").forEach(function (el, i) { el.classList.toggle("active", i === t.position); });
       appElement.classList.toggle("alarm", t.mode === "alarm");
       if (t.mode === "alarm") settings.hidden = true;
+
+      var rotation = 0;
+      if (t.position != null && state.calibration) {
+        rotation = -t.position * 90 * state.calibration.direction;
+        rotation = ((rotation % 360) + 360) % 360;
+        if (rotation > 180) rotation -= 360;
+      }
+      var sideways = Math.abs(rotation) === 90;
+      var scale = sideways ? 240 / 282 : 1;
+      appElement.style.transform = "rotate(" + rotation + "deg)" + (sideways ? " scale(" + scale + ")" : "");
     };
 
     var controller = createController({
