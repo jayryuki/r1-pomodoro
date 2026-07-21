@@ -8,7 +8,7 @@ test("page is a relative-path 240x282 Rabbit creation", () => {
 
   assert.match(html, /width=240/);
   assert.match(html, /href="\.\/styles\.css"/);
-  assert.match(html, /src="\.\/js\/app\.js"/);
+  assert.match(html, /src="\.\/js\/bundle\.js"/);
   assert.match(html, /id="time"/);
   assert.match(html, /id="settingsForm"/);
   assert.match(css, /width:\s*240px/);
@@ -16,7 +16,7 @@ test("page is a relative-path 240x282 Rabbit creation", () => {
 });
 
 test("browser module includes Rabbit SDK, PTT, settings, and simulation hooks", () => {
-  const app = readFileSync(new URL("../js/app.js", import.meta.url), "utf8");
+  const app = readFileSync(new URL("../js/bundle.js", import.meta.url), "utf8");
   assert.match(app, /creationSensors/);
   assert.match(app, /sideClick/);
   assert.match(app, /AudioContext/);
