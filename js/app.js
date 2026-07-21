@@ -199,7 +199,14 @@ function boot() {
   const settingsError = document.querySelector("#settingsError");
   const durationInputs = [0, 1, 2, 3].map(index => document.querySelector(`#duration${index}`));
   const soundButton = document.querySelector("#soundButton");
+  const debugEl = document.querySelector("#debug");
   const alarm = new Alarm(soundButton);
+
+  let sensorCount = 0;
+
+  function debug(text) {
+    if (debugEl) debugEl.textContent = text;
+  }
 
   const render = state => {
     const { timer } = state;
@@ -224,21 +231,56 @@ function boot() {
     render,
   });
 
+  debug("init...");
+
   controller.init().then(() => {
+    debug("init done");
     const accelerometer = globalThis.creationSensors?.accelerometer;
-    if (accelerometer) {
-      Promise.resolve(accelerometer.isAvailable?.() ?? true).then(available => {
+    if (!accelerometer) {
+      debug("no creationSensors");
+      if (!new URLSearchParams(location.search).has("simulate")) {
+        document.querySelector("#status").textContent = "Accelerometer unavailable";
+      }
+      return;
+    }
+
+    debug("sensor found");
+
+    const startAccel = () => {
+      try {
+        accelerometer.start(data => {
+          sensorCount += 1;
+          const norm = normalizeSensorSample(data);
+          if (sensorCount <= 3 || sensorCount % 20 === 0) {
+            const keys = data ? Object.keys(data).join(",") : "null";
+            debug(`#${sensorCount} ${keys} x=${norm.x.toFixed(2)} y=${norm.y.toFixed(2)} z=${norm.z.toFixed(2)}`);
+          }
+          controller.handleSensor(norm);
+        }, { frequency: 20 });
+        debug("sensor started");
+      } catch (e) {
+        debug("start err: " + (e?.message || e));
+      }
+    };
+
+    if (typeof accelerometer.isAvailable === "function") {
+      debug("checking avail...");
+      Promise.resolve(accelerometer.isAvailable()).then(available => {
         if (!available) {
+          debug("sensor unavailable");
           document.querySelector("#status").textContent = "Accelerometer unavailable";
           return;
         }
-        accelerometer.start(data => controller.handleSensor(normalizeSensorSample(data)), { frequency: 20 });
-      }).catch(() => {
-        document.querySelector("#status").textContent = "Accelerometer unavailable";
+        startAccel();
+      }).catch(e => {
+        debug("avail err, starting anyway");
+        startAccel();
       });
-    } else if (!new URLSearchParams(location.search).has("simulate")) {
-      document.querySelector("#status").textContent = "Accelerometer unavailable";
+    } else {
+      startAccel();
     }
+  }).catch(e => {
+    debug("init err: " + (e?.message || e));
   });
 
   setInterval(() => controller.tick(), 250);
