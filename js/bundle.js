@@ -276,14 +276,21 @@
   };
   Alarm.prototype.beep = function () {
     if (!this.context || this.context.state !== "running") { this.button.hidden = false; return; }
-    var osc = this.context.createOscillator(), gain = this.context.createGain();
-    osc.frequency.value = 880;
-    gain.gain.setValueAtTime(0.12, this.context.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.context.currentTime + 0.18);
-    osc.connect(gain).connect(this.context.destination);
-    osc.start(); osc.stop(this.context.currentTime + 0.2);
+    var now = this.context.currentTime;
+    var osc1 = this.context.createOscillator(), osc2 = this.context.createOscillator();
+    var gain = this.context.createGain();
+    osc1.frequency.value = 880;
+    osc2.frequency.value = 1320;
+    osc2.type = "square";
+    gain.gain.setValueAtTime(0.35, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+    osc1.connect(gain);
+    osc2.connect(gain);
+    gain.connect(this.context.destination);
+    osc1.start(now); osc2.start(now);
+    osc1.stop(now + 0.4); osc2.stop(now + 0.4);
   };
-  Alarm.prototype.start = function () { this.stop(); this.beep(); var self = this; this.interval = setInterval(function () { self.beep(); }, 900); };
+  Alarm.prototype.start = function () { this.stop(); this.beep(); var self = this; this.interval = setInterval(function () { self.beep(); }, 500); };
   Alarm.prototype.stop = function () { if (this.interval) clearInterval(this.interval); this.interval = null; };
 
   function formatTime(ms) {
